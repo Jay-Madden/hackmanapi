@@ -28,6 +28,8 @@ func main() {
 	}
 
 	db := data.InitializeDb(os.Getenv("DB_CONN_STR"))
+	db.CreateTables()
+
 	dat, err := os.ReadFile("words.txt")
 
 	lines := strings.Split(string(dat), "\n")
@@ -35,6 +37,9 @@ func main() {
 	wordController := server.Words{Db: db, Words: lines}
 
 	ginServer := gin.Default()
+
+	ginServer.Use(server.Auth(db))
+
 	ginServer.GET("/api/word", wordController.Get)
 
 	err = ginServer.Run()

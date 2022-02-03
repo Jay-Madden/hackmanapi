@@ -3,6 +3,9 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 	"hackmanapi/data"
+	"hackmanapi/data/models"
+	"hackmanapi/data/repositories"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -16,11 +19,18 @@ type Words struct {
 func (word *Words) Get(ctx *gin.Context) {
 	query := ctx.Query("length")
 
+	user := ctx.Keys["User"].(models.User)
+
 	// We got a request for a random word of any length
 	if query == "" {
+		chosenWord := word.Words[rand.Intn(len(word.Words)-1)]
 		ctx.JSON(http.StatusOK, gin.H{
-			"word": word.Words[rand.Intn(len(word.Words)-1)],
+			"word": chosenWord,
 		})
+		_, err := repositories.InsertRequest(*word.Db, user.Id, chosenWord, query)
+		if err != nil {
+			log.Println("Inserting request failed")
+		}
 		return
 	}
 
@@ -45,8 +55,15 @@ func (word *Words) Get(ctx *gin.Context) {
 			lengthWords = append(lengthWords, word)
 		}
 	}
+
+	chosenWord := lengthWords[rand.Intn(len(lengthWords)-1)]
 	ctx.JSON(http.StatusOK, gin.H{
-		"word": lengthWords[rand.Intn(len(lengthWords)-1)],
+		"word": chosenWord,
 	})
+
+	_, err = repositories.InsertRequest(*word.Db, user.Id, chosenWord, query)
+	if err != nil {
+		log.Println("Inserting request failed")
+	}
 	return
 }

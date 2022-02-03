@@ -13,6 +13,7 @@ const createRequestTable = `CREATE TABLE IF NOT EXISTS "Requests"
 		"Id" 						SERIAL NOT NULL,
 		"UserId"					INTEGER NOT NULL,
 		"ReturnedWord"				VARCHAR(50),
+		"Length"					VARCHAR(15),
 		CONSTRAINT "Pk_Request"  	PRIMARY KEY ("Id"),
 		CONSTRAINT "Fk_User" FOREIGN KEY ("UserId")
         	REFERENCES public."Users" ("Id") MATCH SIMPLE

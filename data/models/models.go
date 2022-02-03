@@ -7,7 +7,8 @@ type User struct {
 }
 
 type Requests struct {
-	Id     int
-	UserId int
-	Word   string
+	Id           int
+	UserId       int
+	ReturnedWord string
+	Length       *string
 }
