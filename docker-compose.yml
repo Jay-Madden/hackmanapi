@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   # Create the reverse proxy to route requests and handle ssl/tsl
-  nginx-proxy:
+  nginx:
     image: ghcr.io/linuxserver/swag
     restart: always
     cap_add:
@@ -25,6 +25,8 @@ services:
   hackmanapi:
     build: .
     restart: always
+    depends_on:
+      - nginx
     networks: 
       - nginx-proxy
     env_file: 
