@@ -7,20 +7,25 @@ import (
 	"log"
 )
 
-func InsertRequest(db data.Database, userId int, word string, length string) (int, error) {
+func InsertRequest(db data.Database,
+	context context.Context,
+	userId int,
+	word string,
+	length string) (int, error) {
+
 	var comm pgconn.CommandTag
 	var err error
 
 	log.Printf("Inserting new Request with values (%v, %s, %s)\n", userId, word, length)
 
 	if length == "" {
-		comm, err = db.Pool.Exec(context.Background(),
+		comm, err = db.Pool.Exec(context,
 			`INSERT INTO "Requests" ("UserId", "ReturnedWord", "Length") VALUES ($1, $2, $3)`,
 			userId,
 			word,
 			nil)
 	} else {
-		comm, err = db.Pool.Exec(context.Background(),
+		comm, err = db.Pool.Exec(context,
 			`INSERT INTO "Requests" ("UserId", "ReturnedWord", "Length") VALUES ($1, $2, $3)`,
 			userId,
 			word,

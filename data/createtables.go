@@ -5,7 +5,8 @@ const createUserTable = `CREATE TABLE IF NOT EXISTS "Users"
 		"Id" 				SERIAL NOT NULL,
 		"UserName"			VARCHAR(100),
 		"ApiKey"			VARCHAR(10),
-		CONSTRAINT "Pk_Users" PRIMARY KEY ("Id")
+		CONSTRAINT "Pk_Users" PRIMARY KEY ("Id"),
+		CONSTRAINT "ApiKey" UNIQUE ("ApiKey")
 	);`
 
 const createRequestTable = `CREATE TABLE IF NOT EXISTS "Requests"

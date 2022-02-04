@@ -27,7 +27,7 @@ func (word *Words) Get(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"word": chosenWord,
 		})
-		_, err := repositories.InsertRequest(*word.Db, user.Id, chosenWord, query)
+		_, err := repositories.InsertRequest(*word.Db, ctx.Request.Context(), user.Id, chosenWord, query)
 		if err != nil {
 			log.Println("Inserting request failed")
 		}
@@ -61,7 +61,7 @@ func (word *Words) Get(ctx *gin.Context) {
 		"word": chosenWord,
 	})
 
-	_, err = repositories.InsertRequest(*word.Db, user.Id, chosenWord, query)
+	_, err = repositories.InsertRequest(*word.Db, ctx.Request.Context(), user.Id, chosenWord, query)
 	if err != nil {
 		log.Println("Inserting request failed")
 	}

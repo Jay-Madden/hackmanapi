@@ -18,7 +18,7 @@ func Auth(database *data.Database) gin.HandlerFunc {
 			})
 			return
 		}
-		user, err := repositories.GetUserByKey(*database, key)
+		user, err := repositories.GetUserByKey(*database, ctx.Request.Context(), key)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "Invalid Api Key",

@@ -6,8 +6,8 @@ import (
 	"hackmanapi/data/models"
 )
 
-func InsertUser(db data.Database, name string, key string) (int, error) {
-	comm, err := db.Pool.Exec(context.Background(),
+func InsertUser(db data.Database, context context.Context, name string, key string) (int, error) {
+	comm, err := db.Pool.Exec(context,
 		`INSERT INTO "Users" ("Name", "ApiKey") VALUES ($1, $2)`,
 		name,
 		key)
@@ -18,9 +18,9 @@ func InsertUser(db data.Database, name string, key string) (int, error) {
 	return int(comm.RowsAffected()), nil
 }
 
-func GetUserByKey(db data.Database, key string) (models.User, error) {
+func GetUserByKey(db data.Database, context context.Context, key string) (models.User, error) {
 	user := models.User{}
-	err := db.Pool.QueryRow(context.Background(),
+	err := db.Pool.QueryRow(context,
 		`SELECT * FROM "Users" WHERE "ApiKey" = $1`, key).Scan(&user.Id, &user.Name, &user.ApiKey)
 
 	if err != nil {
