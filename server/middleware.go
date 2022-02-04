@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/patrickmn/go-cache"
 	"hackmanapi/data"
 	"hackmanapi/data/models"
 	"hackmanapi/data/repositories"
@@ -10,6 +11,8 @@ import (
 )
 
 func Auth(database *data.Database) gin.HandlerFunc {
+	userCache := cache.New(20*time.Minute, 40*time.Minute)
+
 	return func(ctx *gin.Context) {
 		key := ctx.Query("key")
 		if key == "" {
@@ -18,14 +21,26 @@ func Auth(database *data.Database) gin.HandlerFunc {
 			})
 			return
 		}
-		user, err := repositories.GetUserByKey(*database, ctx.Request.Context(), key)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"message": "Invalid Api Key",
-			})
-			return
+
+		var (
+			user   interface{}
+			status bool
+		)
+
+		if user, status = userCache.Get(key); !status {
+			var err error
+			user, err = repositories.GetUserByKey(*database, ctx.Request.Context(), key)
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+					"message": "Invalid Api Key",
+				})
+				return
+			}
+
+			userCache.Set(key, user, cache.DefaultExpiration)
 		}
-		ctx.Set("User", user)
+
+		ctx.Set("User", user.(models.User))
 
 		ctx.Next()
 	}
