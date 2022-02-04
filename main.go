@@ -31,6 +31,9 @@ func main() {
 	db.CreateTables()
 
 	dat, err := os.ReadFile("words.txt")
+	if err != nil {
+		log.Fatal("Opening words.txt failed")
+	}
 
 	lines := strings.Split(string(dat), "\n")
 
