@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  # Create the reverse proxy to route requests and handle ssl/tsl
+  nginx-proxy:
+    image: ghcr.io/linuxserver/swag
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - URL=clemsonhackman.com
+      - VALIDATION=http
+      - EMAIL=jaymaddencox@gmail.com
+      - SUBDOMAINS=www
+      - STAGING=false
+    volumes:
+      - ~/config:/config
+    ports:
+      - 443:443
+      - 80:80
+    networks:
+      - nginx-proxy
+  hackmanapi:
+    build: .
+    restart: always
+    networks: 
+      - nginx-proxy
+    env_file: 
+      - ./.env
+
+networks:
+  nginx-proxy:
