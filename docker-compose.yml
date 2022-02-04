@@ -22,7 +22,7 @@ services:
       - 80:80
     networks:
       - nginx-proxy
-  hackmanapi:
+  hackman.api:
     build: .
     restart: always
     depends_on:
