@@ -53,7 +53,7 @@ func RateLimit() gin.HandlerFunc {
 		if val, ok := limits[ctx.Keys["User"].(models.User).Id]; !ok {
 			limits[ctx.Keys["User"].(models.User).Id] = time.Now()
 			return
-		} else if inTimeSpan(time.Now().Add(-5*time.Second), time.Now(), val) {
+		} else if inTimeSpan(time.Now().Add(-1*time.Second), time.Now(), val) {
 			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
 				"Message": "You are being rate limited, Please limit requests to one per 5 seconds",
 			})
