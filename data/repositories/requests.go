@@ -5,6 +5,7 @@ import (
 	"github.com/jackc/pgconn"
 	"hackmanapi/data"
 	"log"
+	"time"
 )
 
 func InsertRequest(db data.Database,
@@ -20,16 +21,18 @@ func InsertRequest(db data.Database,
 
 	if length == "" {
 		comm, err = db.Pool.Exec(context,
-			`INSERT INTO "Requests" ("UserId", "ReturnedWord", "Length") VALUES ($1, $2, $3)`,
+			`INSERT INTO "Requests" ("UserId", "ReturnedWord", "Length", "Time") VALUES ($1, $2, $3, $4)`,
 			userId,
 			word,
-			nil)
+			nil,
+			time.Now())
 	} else {
 		comm, err = db.Pool.Exec(context,
-			`INSERT INTO "Requests" ("UserId", "ReturnedWord", "Length") VALUES ($1, $2, $3)`,
+			`INSERT INTO "Requests" ("UserId", "ReturnedWord", "Length", "Time") VALUES ($1, $2, $3, $4)`,
 			userId,
 			word,
-			length)
+			length,
+			time.Now())
 	}
 
 	if err != nil {
