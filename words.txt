@@ -1221,6 +1221,7 @@ catering
 cathedral
 catherine
 catholic
+cat
 cats
 cattle
 caught
