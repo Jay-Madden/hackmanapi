@@ -41,8 +41,9 @@ func main() {
 
 	ginServer := gin.Default()
 
+	ginServer.Use(server.RateLimitIp())
 	ginServer.Use(server.Auth(db))
-	ginServer.Use(server.RateLimit())
+	ginServer.Use(server.RateLimitKey())
 
 	ginServer.GET("/api/word", wordController.Get)
 

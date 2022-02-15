@@ -46,16 +46,34 @@ func Auth(database *data.Database) gin.HandlerFunc {
 	}
 }
 
-func RateLimit() gin.HandlerFunc {
+func RateLimitIp() gin.HandlerFunc {
+	limits := make(map[string]time.Time)
+
+	return func(ctx *gin.Context) {
+		if val, ok := limits[ctx.ClientIP()]; !ok {
+			limits[ctx.ClientIP()] = time.Now()
+			return
+		} else if inTimeSpan(time.Now().Add(-2*time.Second), time.Now(), val) {
+			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
+				"Message": "You are being rate limited, Please limit requests to one per 2 seconds",
+				"Bucket":  "Ip Limit",
+			})
+		}
+		limits[ctx.ClientIP()] = time.Now()
+	}
+}
+
+func RateLimitKey() gin.HandlerFunc {
 	limits := make(map[int]time.Time)
 
 	return func(ctx *gin.Context) {
 		if val, ok := limits[ctx.Keys["User"].(models.User).Id]; !ok {
 			limits[ctx.Keys["User"].(models.User).Id] = time.Now()
 			return
-		} else if inTimeSpan(time.Now().Add(-1*time.Second), time.Now(), val) {
+		} else if inTimeSpan(time.Now().Add(-2*time.Second), time.Now(), val) {
 			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
-				"Message": "You are being rate limited, Please limit requests to one per 5 seconds",
+				"Message": "You are being rate limited, Please limit requests to one per 2 seconds",
+				"Bucket":  "Api Key",
 			})
 		}
 		limits[ctx.Keys["User"].(models.User).Id] = time.Now()
