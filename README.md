@@ -11,7 +11,7 @@
 * Returns:
   * Json
   * 
-    ```
+```
     {
       "word": "yourword"
     }
