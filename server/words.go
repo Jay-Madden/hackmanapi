@@ -65,5 +65,4 @@ func (word *Words) Get(ctx *gin.Context) {
 	if err != nil {
 		log.Println("Inserting request failed")
 	}
-	return
 }
